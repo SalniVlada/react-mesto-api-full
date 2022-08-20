@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
+const { JWT_STORAGE_TIME, SALT_LENGTH, JWT_SECRET } = require('../tokenGeneration');
 const { errorMessage } = require('../utils/errorMessage');
 const { NOT_FOUND_ERROR } = require('../errors/notFoundError');
 const { CREATED, OK } = require('../utils/successes');
@@ -38,7 +39,7 @@ module.exports.createUser = (req, res, next) => {
     name, about, avatar, email, password,
   } = req.body;
 
-  bcrypt.hash(password, 10)
+  bcrypt.hash(password, SALT_LENGTH)
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
     }))
@@ -79,8 +80,8 @@ module.exports.login = (req, res, next) => {
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, 'some-secret-key', {
-        expiresIn: '7d',
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+        expiresIn: JWT_STORAGE_TIME,
       });
       res.send({ jwt: token });
     })

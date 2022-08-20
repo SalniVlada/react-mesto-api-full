@@ -1,11 +1,12 @@
 const express = require('express');
 
-const { PORT = 3000 } = process.env;
 const app = express();
 
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const { celebrate, Joi, errors } = require('celebrate');
+
+const { PORT, MONGOOSE_URL } = require('./tokenGeneration');
 
 const { NOT_FOUND_ERROR } = require('./errors/notFoundError');
 const { login, createUser } = require('./controllers/user');
@@ -16,6 +17,12 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(requestLogger);
+
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
@@ -61,7 +68,7 @@ app.use((err, req, res, next) => {
 });
 
 async function main() {
-  await mongoose.connect('mongodb://localhost:27017/mestodb');
+  await mongoose.connect(MONGOOSE_URL);
   console.log('Connect to db');
 
   await app.listen(PORT);
