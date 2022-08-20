@@ -7,6 +7,7 @@ const { CREATED } = require('../utils/successes');
 // возвращает все карточки
 module.exports.getCard = (req, res, next) => {
   Card.find({})
+    .sort({ createdAt: -1 })
     .then((card) => res.send({ data: card }))
     .catch((err) => errorMessage(err, req, res, next));
 };

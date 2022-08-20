@@ -11,12 +11,15 @@ const { PORT, MONGOOSE_URL } = require('./tokenGeneration');
 const { NOT_FOUND_ERROR } = require('./errors/notFoundError');
 const { login, createUser } = require('./controllers/user');
 const { auth } = require('./middlewares/auth');
+const { cors } = require('./middlewares/cors');
 
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(requestLogger);
+
+app.use(cors);
 
 app.get('/crash-test', () => {
   setTimeout(() => {

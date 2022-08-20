@@ -50,7 +50,7 @@ function App() {
     if (jwt) {
       auth.getUserAuth(jwt)
         .then((data) => {
-          setEmail(data.data.email);
+          setEmail(data.email);
           setLoggedIn(true);
         })
         .then(() => navigate('/'))
@@ -93,16 +93,16 @@ function App() {
 
   function handleUpdateAvatar({avatar}) {
     api.patchUserAvatar({"avatar": avatar})
-    .then((userData)=>{
-      setCurrentUser(userData);
+    .then((data)=>{
+      setCurrentUser(data.data);
     })
     .catch((err) => console.error(err));
   }
 
   function handleUpdateCard({name, link}) {
     api.postCard({"name": name, "link": link})
-    .then((newCard)=>{
-      setCards([newCard, ...cards]);
+    .then((data)=>{
+      setCards([data.data, ...cards]);
     })
     .catch((err) => console.error(err));
   }
@@ -110,7 +110,7 @@ function App() {
   useEffect(() => {
     if (loggedIn) {
       api.getInitialCards().then((data) => {
-        setCards(data)
+        setCards(data.data)
       })
     .catch((err) => console.error(err));
     }
@@ -121,17 +121,17 @@ function App() {
   }
 
   function handleCardLike(card) {
-    const isLiked = card.likes.some(i => i._id === currentUser._id);
+    const isLiked = card.likes.some(i => i === currentUser._id);
     
     if (isLiked) {
-      api.deleteLikes(card._id, !isLiked).then((newCard) => {
-        setNewCards(card._id, newCard);
+      api.deleteLikes(card._id, !isLiked).then((data) => {
+        setNewCards(card._id, data.data);
       })
         .catch((err) => 
           console.error(err));
     } else {
-      api.putLikes(card._id, isLiked).then((newCard) => {
-          setNewCards(card._id, newCard);
+      api.putLikes(card._id, isLiked).then((data) => {
+          setNewCards(card._id, data.data);
         })
         .catch((err) => 
           console.error(err));
@@ -165,7 +165,7 @@ function App() {
   function onLogin(password, email) {
     auth.signIn({password: password, email: email})
       .then((data) => {
-        localStorage.setItem('jwt', data.token);
+        localStorage.setItem('jwt', data.jwt);
         setEmail(email);
         setLoggedIn(true);
         navigate('/');

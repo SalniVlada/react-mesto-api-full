@@ -4,6 +4,15 @@ class Api {
     this.headers = options.headers; 
   }
 
+  _getHeaders() {
+    let currentHeaders = this.headers;
+    const jwt = localStorage.getItem('jwt');
+    if (jwt) {
+      currentHeaders['Authorization'] = `Bearer ${jwt}`
+    }
+    return currentHeaders;
+  }
+
   _checkResponse(res) {
     if (res.ok) {
       return res.json();
@@ -14,7 +23,7 @@ class Api {
   // единый блок GET
   _executeGetRequest(path) {
     return fetch(this.baseUrl + path, {
-      headers: this.headers
+      headers: this._getHeaders()
     })
     .then(this._checkResponse);
   }
@@ -33,7 +42,7 @@ class Api {
   _executePatchRequest(path, data) {
     return fetch(this.baseUrl + path, {
       method: 'PATCH',
-      headers: this.headers,
+      headers: this._getHeaders(),
       body: JSON.stringify(data)
     })
     .then(this._checkResponse);
@@ -66,7 +75,7 @@ class Api {
   _executeDeleteRequest(path) {
     return fetch(this.baseUrl + path, {
       method: 'DELETE',
-      headers: this.headers
+      headers: this._getHeaders()
     })
     .then(this._checkResponse);
   }
@@ -131,17 +140,16 @@ class Api {
 }
 
 export const api = new Api({
-  baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-41',
+  baseUrl: 'https://api.salnivlada.nomoredomains.sbs',
   headers: {
-    authorization: '2e7341e4-43c9-49f8-bd0b-0cf4b57667fa',
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
   }
 });
 
 export default api;
 
 export const auth = new Api({
-  baseUrl: 'https://auth.nomoreparties.co',
+  baseUrl: 'https://api.salnivlada.nomoredomains.sbs',
   headers: {
     'Content-Type': 'application/json'
   }
