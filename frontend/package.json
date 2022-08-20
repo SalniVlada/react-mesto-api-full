@@ -37,6 +37,6 @@
     ]
   },
   "deploy": [
-    "npm run build && scp -r ./build/* salnivlada@84.201.128.16:/home/salnivlada/mesto-frontend"
+    "npm run build && scp -r ./build/* salnivlada@84.201.128.16:/home/salnivlada/react-mesto-api-full/frontend"
   ]
 }
