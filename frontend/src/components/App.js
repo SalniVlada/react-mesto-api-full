@@ -197,7 +197,7 @@ function App() {
             />
           </Route>
         </Routes>
-
+ 
         <Footer/>
 
         <EditProfilePopup isOpen={isPopupEditProfile} onClose={closeAllPopups} onUpdateUser={handleUpdateUser}/>
